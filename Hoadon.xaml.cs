@@ -93,12 +93,7 @@ namespace BravoNet_Client
                         {
                             string username = reader["username"].ToString();
                             string date = order.OrderDate.ToString("dd/MM/yyyy");
-                            var statusComboBox = new ComboBox
-                            {
-                                Width = 200,
-                                ItemsSource = new List<string> { "Chưa thanh toán", "Đã thanh toán" },
-                                SelectedIndex = order.Status ? 1 : 0
-                            };
+                            string statusText = order.Status ? "Đã hoàn thành" : "Chưa hoàn thành";
 
                             var layout = new StackPanel
                             {
@@ -107,7 +102,7 @@ namespace BravoNet_Client
                                 {
                                     CreateRow("Tên khách hàng:", new TextBlock { Text = username, Width = 200 }),
                                     CreateRow("Thời gian đặt hàng:", new TextBlock { Text = date, Width = 200 }),
-                                    CreateRow("Trạng thái:", statusComboBox),
+                                    CreateRow("Trạng thái:", new TextBlock{Text = statusText, Width = 200}),
                                     new TextBlock { Text = "Sản phẩm", FontWeight = FontWeights.Bold, Margin = new Thickness(0, 10, 0, 0) }
                                 }
                             };
@@ -155,19 +150,6 @@ namespace BravoNet_Client
                             };
 
                             var result = await dialog.ShowAsync();
-                            if (result == ContentDialogResult.Primary)
-                            {
-                                bool newStatus = statusComboBox.SelectedIndex == 1;
-                                order.Status = newStatus;
-
-                                using (var updateCmd = conn.CreateCommand())
-                                {
-                                    updateCmd.CommandText = "UPDATE orders SET order_status = @status WHERE order_id = @id";
-                                    updateCmd.Parameters.AddWithValue("@status", newStatus ? 1 : 0);
-                                    updateCmd.Parameters.AddWithValue("@id", order.OrderId);
-                                    updateCmd.ExecuteNonQuery();
-                                }
-                            }
                         }
                     }
                 }
