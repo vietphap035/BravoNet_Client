@@ -33,7 +33,9 @@
                         <Border Background="White" CornerRadius="8" Margin="0,5" Padding="10">
                             <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
                                 <!-- Ảnh sản phẩm -->
-                                <Image Source="{Binding img}" Width="60" Height="60" Stretch="UniformToFill" />
+                                <Image Width="60" Height="60" Stretch="UniformToFill" Loaded="Image_Loaded"/>
+
+
 
                                 <!-- Thông tin sản phẩm -->
                                 <StackPanel Grid.Column="1" Margin="10,0" VerticalAlignment="Center">

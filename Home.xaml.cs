@@ -175,7 +175,7 @@ namespace BravoNet_Client
             using (var conn = DatabaseConnection.GetConnection())
             {
                 conn.Open();
-                string updatePcQuery = "UPDATE pc SET is_active = false, UId = Null WHERE pc_number = @pcNumber";
+                string updatePcQuery = "UPDATE pc SET is_active = 0, UId = Null WHERE pc_number = @pcNumber";
                 using (var cmd = DatabaseConnection.CreateCommand(updatePcQuery, conn))
                 {
                     cmd.Parameters.AddWithValue("@pcNumber", pcNum);
@@ -252,6 +252,7 @@ namespace BravoNet_Client
                 comd.Parameters.AddWithValue("@time", updatedTime);
                 comd.Parameters.AddWithValue("@UId", uid);
                 comd.ExecuteNonQuery();
+
             }
             else
             {

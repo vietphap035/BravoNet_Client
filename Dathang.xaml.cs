@@ -6,10 +6,12 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -155,6 +157,7 @@ namespace BravoNet_Client
                 {
                     while (reader.Read())
                     {
+                        
                         var sanPham = new SanPhamHoaDon
                         {
                             Id = reader.GetInt32("product_id"),
@@ -164,6 +167,7 @@ namespace BravoNet_Client
                             price_at_order = reader.GetDecimal("price"),
                             quantity_at_order = reader.GetInt32("quantity")
                         };
+                        Debug.WriteLine("Loaded product: " + sanPham.img);
                         sanPhamList.Add(sanPham);
                         
                     }
@@ -171,5 +175,49 @@ namespace BravoNet_Client
             }
             return sanPhamList;
         }
+        private async void Image_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (sender is Image imgControl && imgControl.DataContext is SanPhamHoaDon data)
+            {
+                try
+                {
+                    string imgPath = data.img;
+
+                    if (string.IsNullOrWhiteSpace(imgPath))
+                    {
+                        // Ảnh mặc định nếu không có đường dẫn
+                        imgControl.Source = new BitmapImage(new Uri("ms-appx:///Assets/StoreLogo.png"));
+                        return;
+                    }
+
+                    if (imgPath.StartsWith("ms-appdata:///local/"))
+                    {
+                        // Lấy đường dẫn tuyệt đối
+                        string relativePath = imgPath.Replace("ms-appdata:///local/", "");
+                        var localFolderPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+                        string absolutePath = Path.Combine(localFolderPath, relativePath);
+
+                        // Mở file và set ảnh từ stream
+                        using var stream = File.OpenRead(absolutePath);
+                        BitmapImage bitmap = new();
+                        await bitmap.SetSourceAsync(stream.AsRandomAccessStream());
+                        imgControl.Source = bitmap;
+                    }
+                    else
+                    {
+                        // Dùng ảnh từ URI khác (vd: ms-appx)
+                        imgControl.Source = new BitmapImage(new Uri(imgPath));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Lỗi load ảnh: {ex.Message}");
+                    imgControl.Source = new BitmapImage(new Uri("ms-appx:///Assets/StoreLogo.png"));
+                }
+            }
+        }
+
+
+
     }
 }
