@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="BravoNet_Client.Home"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BravoNet_Client"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    >
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
+    <Grid Padding="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Nội dung chính -->
+        <Frame x:Name="ContentFrame" Grid.Row="0" CornerRadius="12" />
+
+        <!-- Thanh menu -->
+        <Grid Grid.Row="1" Margin="10" Background="White" CornerRadius="20" Padding="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Nút Thông tin -->
+            <Button Grid.Column="0" Click="ThongTin_Click" Background="Transparent" HorizontalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center">
+                    <FontIcon Glyph="&#xE77B;" FontSize="32" Foreground="DarkSlateBlue" />
+                    <TextBlock Text="Thông tin" FontSize="14" Foreground="Black" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+
+            <!-- Nút Đơn hàng có badge -->
+            <Button Grid.Column="1" Click="DonHang_Click" Background="Transparent" HorizontalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center">
+                    <Grid Width="40" Height="40">
+                        <FontIcon Glyph="&#xE7BF;" FontSize="32" Foreground="DarkSlateBlue" 
+                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Grid  Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Top">
+                            <Ellipse Width="16" Height="16" Fill="Red" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                            <TextBlock x:Name="hdNum" Foreground="White" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,1,1,0"/>
+                        </Grid>
+                    </Grid>
+                    <TextBlock Text="Đơn hàng" FontSize="14" Foreground="Black" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+
+            <!-- Nút Đăng xuất -->
+            <Button Grid.Column="2" Click="DangXuat_Click" Background="Transparent" HorizontalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center">
+                    <FontIcon Glyph="&#xE8AC;" FontSize="32" Foreground="DarkSlateBlue"/>
+                    <TextBlock Text="Đăng xuất" FontSize="14" Foreground="Black" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+    </Grid>
+</Window>

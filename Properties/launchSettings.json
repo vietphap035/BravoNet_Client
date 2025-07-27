@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "BravoNet_Client (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "BravoNet_Client (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

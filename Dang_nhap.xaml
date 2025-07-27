@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="BravoNet_Client.Dang_nhap"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BravoNet_Client"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Dang_nhap">
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
+    <Grid x:Name="ContentRoot">
+        <Grid Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Hàng chứa BRAVO NET -->
+                <RowDefinition Height="*"/>
+                <!-- Hàng chứa form đăng nhập -->
+            </Grid.RowDefinitions>
+
+            <!-- Logo và tiêu đề ở trên cùng -->
+            <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="20" Orientation="Horizontal">
+                <TextBlock Text="BRAVO NET" FontSize="36" Margin="4" 
+               TextAlignment="Center" VerticalAlignment="Center"/>
+                <Image Source="/Assets/icon.png" Width="60" Height="100"/>
+            </StackPanel>
+
+            <!-- Form đăng nhập ở giữa -->
+            <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,100">
+                <TextBlock Text="Enter your username below" Margin="0,0,0,5"
+               TextWrapping="Wrap" Width="300"
+               TextAlignment="Center" VerticalAlignment="Center" FontSize="16"/>
+                <TextBox x:Name="UsernameTextBox" Width="250" Margin="0,0,0,10"/>
+
+                <TextBlock Text="Enter your password below" Margin="0,0,0,5"
+               TextWrapping="Wrap" Width="300"
+               TextAlignment="Center" VerticalAlignment="Center" FontSize="16"/>
+                <PasswordBox x:Name="PasswordTextBox" Margin="4" Width="250"/>
+
+                <TextBlock Text="Select your computer" Margin="0,0,0,5"
+                           TextWrapping="Wrap" Width="300"
+                            TextAlignment="Center" VerticalAlignment="Center" FontSize="16"/>
+                <ComboBox Width="250" Margin="4" 
+                          ItemsSource="{Binding MyDataList}"
+                          SelectedItem="{Binding SelectPC, Mode=TwoWay}"
+                          DisplayMemberPath="pc_num"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center"
+                          />
+
+                <Button x:Name="LoginButton" Content="Login" Background="DodgerBlue" Foreground="White"
+            Click="LoginButton_Click" Width="80" HorizontalAlignment="Center" Margin="0,20"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
