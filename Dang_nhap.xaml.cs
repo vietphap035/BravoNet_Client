@@ -110,8 +110,43 @@ namespace BravoNet_Client
                             {
 
                                 string userId = reader["UId"].ToString();
-
-
+                                reader.Close();
+                                query = "SELECT existing_time FROM customer_time WHERE UId = @UId";
+                                using (var timeCmd = DatabaseConnection.CreateCommand(query, con))
+                                {
+                                    timeCmd.Parameters.AddWithValue("@UId", userId);
+                                    using (var timeReader = timeCmd.ExecuteReader())
+                                    {
+                                        if (timeReader.Read())
+                                        {
+                                            int existingTime = timeReader.GetInt32("existing_time");
+                                            if (existingTime <= 0)
+                                            {
+                                                ContentDialog errorDialog = new()
+                                                {
+                                                    Title = "Insufficient Time",
+                                                    Content = "You do not have enough time to log in.",
+                                                    CloseButtonText = "OK",
+                                                    XamlRoot = this.Content.XamlRoot
+                                                };
+                                                await errorDialog.ShowAsync();
+                                                return;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            ContentDialog errorDialog = new()
+                                            {
+                                                Title = "Error",
+                                                Content = "Could not retrieve existing time.",
+                                                CloseButtonText = "OK",
+                                                XamlRoot = this.Content.XamlRoot
+                                            };
+                                            await errorDialog.ShowAsync();
+                                            return;
+                                        }
+                                    }
+                                }
                                 ContentDialog successDialog = new()
                                 {
                                     Title = "Login Successful",
@@ -122,7 +157,7 @@ namespace BravoNet_Client
                                 await successDialog.ShowAsync();
 
 
-                                reader.Close();
+                                
                                 string updateQuery = "UPDATE accounts SET is_online = TRUE WHERE UId = @UId";
                                 using (var updateCmd = DatabaseConnection.CreateCommand(updateQuery, con))
                                 {
