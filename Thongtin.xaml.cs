@@ -112,10 +112,10 @@ namespace BravoNet_Client
                 {
                     if (reader.Read())
                     {
-                        int minutes = reader.GetInt32(0);  // hoặc reader.GetUInt32(0) nếu bạn dùng uint
-                        TimeSpan time = TimeSpan.FromMinutes(minutes);
+                        // Thay vì FromMinutes, ta chuyển sang FromSeconds
+                        int seconds = reader.GetInt32(0);
+                        TimeSpan time = TimeSpan.FromSeconds(seconds);
                         Gio.Text = time.ToString(@"hh\:mm\:ss");
-
                     }
                 }
             }

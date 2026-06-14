@@ -20,7 +20,7 @@ namespace BravoNet_Client
         private IntPtr oldWndProc = IntPtr.Zero;
 
         // Win32 API
-        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtrW", SetLastError = true)]
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongW", SetLastError = true)]
         private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
         [DllImport("user32.dll", EntryPoint = "CallWindowProcW")]
@@ -242,8 +242,8 @@ namespace BravoNet_Client
                 }
 
                 // Trừ thời gian đã sử dụng
-                int updatedTime = existingTime - (int)sessionDuration.TotalMinutes;
-                Debug.WriteLine($"Thời gian đã sử dụng: {sessionDuration.TotalMinutes} phút, thời gian còn lại: {updatedTime} phút");
+                int updatedTime = existingTime - (int)sessionDuration.TotalSeconds;
+                Debug.WriteLine($"Thời gian đã sử dụng: {sessionDuration.TotalSeconds} giây, thời gian còn lại: {updatedTime} giây");
                 if (updatedTime < 0) updatedTime = 0;
 
                 // Cập nhật lại thời gian còn lại

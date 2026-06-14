@@ -18,6 +18,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Microsoft.Data.SqlClient;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -56,7 +57,7 @@ namespace BravoNet_Client
                         {
                             pc_id = reader["pc_code"].ToString(),
                             IsOnline = Convert.ToBoolean(reader["is_active"]),
-                            pc_num = reader.GetInt32("pc_number")
+                            pc_num = reader.GetInt32(reader.GetOrdinal("pc_number"))
                         };
                         dataList.Add(pc);
                     }
@@ -64,7 +65,7 @@ namespace BravoNet_Client
             }
             return dataList;
         }
-        private async Task<bool> ValidatePC(MySqlConnection con,int pcNumber)
+        private async Task<bool> ValidatePC(SqlConnection con,int pcNumber)
         {
             string pcQuery = "SELECT * FROM pc WHERE pc_number = @pcNumber";
             using var pcCmd = DatabaseConnection.CreateCommand(pcQuery, con);
@@ -98,17 +99,18 @@ namespace BravoNet_Client
                 {
                     con.Open();
                     string query = "SELECT * FROM accounts WHERE username = @username AND pwd = @password";
-                    if (!await ValidatePC(con,pcNumber)) return;
+                    if (!await ValidatePC(con, pcNumber)) return;
+
                     using (var cmd = DatabaseConnection.CreateCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@username", username);
                         cmd.Parameters.AddWithValue("@password", password);
                         Debug.WriteLine($"Executing query: {query} with parameters: {username}, {password}");
+
                         using (var reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
-
                                 string userId = reader["UId"].ToString();
                                 reader.Close();
                                 query = "SELECT existing_time FROM customer_time WHERE UId = @UId";
@@ -119,7 +121,7 @@ namespace BravoNet_Client
                                     {
                                         if (timeReader.Read())
                                         {
-                                            int existingTime = timeReader.GetInt32("existing_time");
+                                            int existingTime = timeReader.GetInt32(timeReader.GetOrdinal("existing_time"));
                                             if (existingTime <= 0)
                                             {
                                                 ContentDialog errorDialog = new()
@@ -147,45 +149,39 @@ namespace BravoNet_Client
                                         }
                                     }
                                 }
+
                                 ContentDialog successDialog = new()
                                 {
                                     Title = "Login Successful",
-                                    Content = "Welcome to DACS1!",
+                                    Content = "Welcome to BravoNet!",
                                     CloseButtonText = "OK",
                                     XamlRoot = this.Content.XamlRoot
                                 };
                                 await successDialog.ShowAsync();
 
-
-                                
-                                string updateQuery = "UPDATE accounts SET is_online = TRUE WHERE UId = @UId";
+                                string updateQuery = "UPDATE accounts SET is_online = 1, last_login = @last_login WHERE UId = @UId";
                                 using (var updateCmd = DatabaseConnection.CreateCommand(updateQuery, con))
-                                {
-                                    updateCmd.Parameters.AddWithValue("@UId", userId);
-                                    updateCmd.ExecuteNonQuery();
-                                }
-                                string updateLoginQuery = "UPDATE accounts SET last_login = @last_login WHERE UId = @UId";
-                                using (var updateCmd = DatabaseConnection.CreateCommand(updateLoginQuery, con))
                                 {
                                     updateCmd.Parameters.AddWithValue("@last_login", DateTime.Now);
                                     updateCmd.Parameters.AddWithValue("@UId", userId);
                                     updateCmd.ExecuteNonQuery();
                                 }
-                                string updatePcQuery = "UPDATE pc SET is_active = true, UId = @UId WHERE pc_number = @pcNumber";
+
+                                // Cập nhật trạng thái máy tính
+                                string updatePcQuery = "UPDATE pc SET is_active = 1, UId = @UId WHERE pc_number = @pcNumber";
                                 using (var updateCmd = DatabaseConnection.CreateCommand(updatePcQuery, con))
                                 {
                                     updateCmd.Parameters.AddWithValue("@pcNumber", pcNumber);
                                     updateCmd.Parameters.AddWithValue("@UId", userId);
                                     updateCmd.ExecuteNonQuery();
                                 }
-                                
-                                Home home = new(pcNumber,userId);
+
+                                Home home = new(pcNumber, userId);
                                 home.Activate();
                                 this.Close();
                             }
                             else
                             {
-
                                 ContentDialog errorDialog = new()
                                 {
                                     Title = "Login Failed",

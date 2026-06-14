@@ -160,12 +160,12 @@ namespace BravoNet_Client
                         
                         var sanPham = new SanPhamHoaDon
                         {
-                            Id = reader.GetInt32("product_id"),
+                            Id = reader.GetInt32(reader.GetOrdinal("product_id")),
                             img  = reader["imgPath"] != DBNull.Value ? reader.GetString(reader.GetOrdinal("imgPath")) : "Assets/StoreLogo.png",
-                            name = reader.GetString("name"),
+                            name = reader.GetString(reader.GetOrdinal("name")),
                             quantity = 0,
-                            price_at_order = reader.GetDecimal("price"),
-                            quantity_at_order = reader.GetInt32("quantity")
+                            price_at_order = reader.GetDecimal(reader.GetOrdinal("price")),
+                            quantity_at_order = reader.GetInt32(reader.GetOrdinal("quantity"))
                         };
                         Debug.WriteLine("Loaded product: " + sanPham.img);
                         sanPhamList.Add(sanPham);
